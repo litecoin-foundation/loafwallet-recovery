@@ -106739,15 +106739,18 @@ window.Entropy = new (function() {
                         address = bitcoinjs.bitcoin.address.fromOutputScript(scriptpubkey, network)
                     }
                 }
-                // query Insight Lite for balance
+                // query Litecoin Space for balance
                 // convert from sats to whole ltc + append LTC
-                var baseURL = "https://insight.litecore.io/api/addr/" + address + "/balance";
+                var baseURL = "https://litecoinspace.org/api/address/" + address;
                 var balance;
                 $.ajax({
                     url: baseURL,
                     success: function(data) {
-                        data = data / 100000000
-                        balance = data.toString() + " LTC";
+                        var fundedSum = data.chain_stats.funded_txo_sum;
+                        var spentSum = data.chain_stats.spent_txo_sum;
+                        var balanceSats = fundedSum - spentSum;
+                        var balanceLTC = balanceSats / 100000000;
+                        balance = balanceLTC.toString() + " LTC";
                     },
                     async: false,
                 });
